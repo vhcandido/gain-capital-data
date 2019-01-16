@@ -5,14 +5,32 @@ import candle_creation as candles
 from joblib import Parallel, delayed
 from math import sqrt
 
+
 def main(args):
-    pairs = ['AUDCAD','AUDJPY','AUDNZD','AUDUSD',
-                'CADJPY',
-                'EURAUD','EURCAD','EURGBP','EURJPY','EURNZD','EURUSD',
-                'GBPAUD','GBPCAD','GBPJPY','GBPNZD','GBPUSD',
-                'NZDCAD','NZDJPY','NZDUSD',
-                'USDCAD','USDJPY']
-    #periods = { 2013: range(8,13),
+    pairs = [
+        'AUDCAD',
+        'AUDJPY',
+        'AUDNZD',
+        'AUDUSD',
+        'CADJPY',
+        'EURAUD',
+        'EURCAD',
+        'EURGBP',
+        'EURJPY',
+        'EURNZD',
+        'EURUSD',
+        'GBPAUD',
+        'GBPCAD',
+        'GBPJPY',
+        'GBPNZD',
+        'GBPUSD',
+        'NZDCAD',
+        'NZDJPY',
+        'NZDUSD',
+        'USDCAD',
+        'USDJPY',
+    ]
+    # periods = { 2013: range(8,13),
     #        2014: range(1,13),
     #        2015: range(1,13),
     #        2016: range(1,8) }
@@ -35,11 +53,22 @@ def main(args):
                 print('Split candles')
                 action = 'split_candles'
 
-
             filenames = gaincapital.build_file_names(pairs, periods, tick_dir)
 
-            print('\n'.join("%s: %s"%(p, f) for p in filenames.keys() for f in filenames[p]))
-            Parallel(n_jobs=6)(delayed(candles.create_ohlc_file)(pair, filenames[pair], action) for pair in pairs)
+            print(
+                '\n'.join(
+                    "%s: %s" % (p, f)
+                    for p in filenames.keys()
+                    for f in filenames[p]
+                )
+            )
+            Parallel(n_jobs=6)(
+                delayed(candles.create_ohlc_file)(
+                    pair, filenames[pair], action
+                )
+                for pair in pairs
+            )
+
 
 if __name__ == '__main__':
     if len(sys.argv) > 1:
