@@ -1,0 +1,32 @@
+{
+    "pairs": [
+        "AUDCAD",
+        "AUDJPY",
+        "AUDNZD",
+        "AUDUSD",
+        "CADJPY",
+        "EURAUD",
+        "EURCAD",
+        "EURGBP",
+        "EURJPY",
+        "EURNZD",
+        "EURUSD",
+        "GBPAUD",
+        "GBPCAD",
+        "GBPJPY",
+        "GBPNZD",
+        "GBPUSD",
+        "NZDCAD",
+        "NZDJPY",
+        "NZDUSD",
+        "USDCAD",
+        "USDJPY"
+    ],
+    "start": {
+        "year": 2013,
+        "month": 1
+    },
+    "dirs": {
+        "ticks": "./ticks"
+    }
+}
