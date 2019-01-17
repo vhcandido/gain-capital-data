@@ -44,12 +44,14 @@ def monthlist(start, end):
     return mlist
 
 
-def watch_and_download():
+def watch_and_download(
+    dfile='metadata/downloaded.csv', wfile='metadata/watching_test.json'
+):
     baseurl = 'http://ratedata.gaincapital.com/'
     path_fmt = '{}/{}/{}_Week{}.zip'
 
     # Load information of pairs and dates to keep track of
-    with open('info/watching.json', 'r') as f:
+    with open(wfile, 'r') as f:
         watching = json.load(f)
 
     # Download until this month
@@ -65,7 +67,7 @@ def watch_and_download():
     # from the CSV file (as string).
 
     # Load the files already downloaded so they can be skipped
-    with open('info/downloaded.csv', newline='') as csvfile:
+    with open(dfile, newline='') as csvfile:
         spamreader = csv.reader(csvfile, delimiter=',')
         downloaded = [tuple(row) for row in spamreader]
 
@@ -82,7 +84,7 @@ def watch_and_download():
             print("\n'{}'".format(url))
 
             # Keep GainCapital's structure (path) inside local directory
-            filepath = os.path.join(watching['dirs']['ticks'], path)
+            filepath = os.path.join(watching['pathto']['tick'], path)
 
             # Check if it has been successfully downloaded and loaded locally
             if download_and_check(url, filepath):
@@ -91,8 +93,8 @@ def watch_and_download():
                 # Save the progress
                 downloaded.append(new_download)
 
-    # Save info about downloaded files
-    with open('info/downloaded.csv', 'w', newline='') as csvfile:
+    # Save metadata about downloaded files
+    with open('metadata/downloaded.csv', 'w', newline='') as csvfile:
         # TODO sort downloaded content
         spamwriter = csv.writer(csvfile, delimiter=',')
         for row in downloaded:

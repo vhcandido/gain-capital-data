@@ -26,7 +26,9 @@
         "year": 2013,
         "month": 1
     },
-    "dirs": {
-        "ticks": "./ticks"
+    "pathto": {
+        "tick": "./data/tick",
+        "hour": "./data/hour",
+        "day": "./data/day"
     }
 }

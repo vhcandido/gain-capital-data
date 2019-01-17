@@ -1,0 +1,16 @@
+{
+    "pairs": [
+        "AUDCAD",
+        "EURUSD",
+        "GBPJPY"
+    ],
+    "start": {
+        "year": 2018,
+        "month": 10
+    },
+    "pathto": {
+        "tick": "./data/tick",
+        "hour": "./data/hour",
+        "day": "./data/day"
+    }
+}
