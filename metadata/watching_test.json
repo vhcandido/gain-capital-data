@@ -1,16 +1,20 @@
 {
     "pairs": [
         "AUDCAD",
-        "EURUSD",
-        "GBPJPY"
+        "EURUSD"
     ],
     "start": {
         "year": 2018,
-        "month": 10
+        "month": 11
     },
     "pathto": {
+        "zip": "./data/zip",
         "tick": "./data/tick",
         "hour": "./data/hour",
         "day": "./data/day"
+    },
+    "log": {
+        "downloaded": "./metadata/downloaded.csv",
+        "to_unzip": "./metadata/to_unzip.csv"
     }
 }
