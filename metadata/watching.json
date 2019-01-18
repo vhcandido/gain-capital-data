@@ -27,8 +27,13 @@
         "month": 1
     },
     "pathto": {
+        "zip": "./data/zip",
         "tick": "./data/tick",
         "hour": "./data/hour",
         "day": "./data/day"
+    },
+    "log": {
+        "downloaded": "./metadata/downloaded.csv",
+        "to_unzip": "./metadata/to_unzip.csv"
     }
 }
