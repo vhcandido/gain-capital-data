@@ -7,21 +7,25 @@ from utils import path_fmt
 
 from enum import Enum
 
+
 class ApplyRemove(Enum):
     EMPTY = -1
     ASK = 0
     KEEP_ALL = 1
     RM_ALL = 2
 
+
 APPLY_ALL_CSV = ApplyRemove.EMPTY
+
 
 def is_empty_csv(data):
     from io import StringIO
+
     reader = StringIO(data)
 
     # Try to read header
     if reader.readline():
-        return (not any(reader))
+        return not any(reader)
     return True
 
 
@@ -63,14 +67,19 @@ def unzip(src, dst):
         if APPLY_ALL_CSV == ApplyRemove.RM_ALL:
             print("Removing it...")
             os.unlink(src)
-        elif APPLY_ALL_CSV == ApplyRemove.EMPTY or APPLY_ALL_CSV == ApplyRemove.ASK:
+        elif (
+            APPLY_ALL_CSV == ApplyRemove.EMPTY
+            or APPLY_ALL_CSV == ApplyRemove.ASK
+        ):
             answer = query_yes_no("Remove it?", default='no')
             if answer:
                 print("Removing it...")
                 os.unlink(src)
             if APPLY_ALL_CSV == ApplyRemove.EMPTY:
                 if query_yes_no("Apply to all?", default='yes'):
-                    APPLY_ALL_CSV = ApplyRemove.RM_ALL if answer else ApplyRemove.KEEP_ALL
+                    APPLY_ALL_CSV = (
+                        ApplyRemove.RM_ALL if answer else ApplyRemove.KEEP_ALL
+                    )
                 else:
                     APPLY_ALL_CSV = ApplyRemove.ASK
         return False
@@ -93,13 +102,15 @@ def main(wfile='metadata/watching_test.json'):
     for row in to_unzip:
         zipname = path_fmt.format(*row, 'zip')
         csvname = path_fmt.format(*row, 'csv')
-        if not unzip(
+        if (
+            not unzip(
                 src=os.path.join(watching['pathto']['zip'], zipname),
-                dst=os.path.join(watching['pathto']['tick'], csvname)
-        ) and row in downloaded:
+                dst=os.path.join(watching['pathto']['tick'], csvname),
+            )
+            and row in downloaded
+        ):
             print("Download it again in the future")
             downloaded.remove(row)
-
 
     wlog_csv([], watching['log']['to_unzip'])
     wlog_csv(downloaded, watching['log']['downloaded'])

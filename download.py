@@ -124,6 +124,3 @@ def main(wfile='metadata/watching_test.json', force=False):
 
 if __name__ == '__main__':
     main()
-
-
-

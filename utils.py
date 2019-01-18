@@ -23,6 +23,7 @@ def mktree(path):
         print("Creating tree: '{}'".format(dirpath))
         os.makedirs(dirpath)
 
+
 def wlog_csv(data, filename, mode='w'):
     mktree(filename)
     with open(filename, mode, newline='') as csvfile:
@@ -58,8 +59,7 @@ def query_yes_no(question, default="yes"):
     The "answer" return value is True for "yes" or False for "no".
     """
 
-    valid = {"yes": True, "y": True, "ye": True,
-             "no": False, "n": False}
+    valid = {"yes": True, "y": True, "ye": True, "no": False, "n": False}
 
     if default is None:
         prompt = " [y/n] "
@@ -77,5 +77,6 @@ def query_yes_no(question, default="yes"):
         elif choice in valid:
             return valid[choice]
         else:
-            sys.stdout.write("Please respond with 'yes' or 'no' "
-                             "(or 'y' or 'n').\n")
+            sys.stdout.write(
+                "Please respond with 'yes' or 'no' (or 'y' or 'n').\n"
+            )
