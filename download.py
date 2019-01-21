@@ -38,7 +38,9 @@ def download_file(url, filepath=None):
 
 def main(wfile='metadata/watching_test.json', force=False):
     watching = load_watchfile(wfile)
-    combinations = build_combn(watching['start'], watching['end'], watching['pairs'], range(1, 6))
+    combinations = build_combn(
+        watching['start'], watching['end'], watching['pairs'], range(1, 6)
+    )
 
     # Keeping track of files already processed
     downloaded = []
@@ -92,4 +94,3 @@ if __name__ == '__main__':
     else:
         print("usage: ./{} file [--force]".format(sys.argv[Args.PROG.value]))
         exit(1)
-

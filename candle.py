@@ -26,17 +26,18 @@ def tick_to_ohlc(tick_data, price='RateAsk', period='1h'):
     return ohlc
 
 
-def main(wfile, period='1h', per_file = 'year'):
+def main(wfile, period='1h', per_file='year'):
     watching = load_watchfile(wfile)
-    dled = build_combn(watching['start'], watching['end'], watching['pairs'])
-    dled = [(*ym, p, w) for ym, p, w in dled]
-    #dled = [
-    #    ('2013', '01 January', 'AUD_CAD', '2'),
-    #    ('2013', '01 January', 'AUD_CAD', '3'),
-    #    ('2013', '01 January', 'AUD_CAD', '4'),
-    #    ('2013', '01 January', 'AUD_CAD', '5'),
-    #]
+
+    dled = [
+        (*ym, p, w)
+        for ym, p, w in build_combn(
+            watching['start'], watching['end'], watching['pairs']
+        )
+    ]
+
     df_dled = pd.DataFrame(dled, columns=['year', 'month', 'pair', 'week'])
+
     infile = os.path.join(watching['pathto']['tick'], path_fmt)
 
     if per_file == 'year':
@@ -72,33 +73,9 @@ def main(wfile, period='1h', per_file = 'year'):
         mktree(outfile)
         pd.concat(outlist).sort_index().to_csv(outfile, float_format="%.6f")
 
-
     Parallel(n_jobs=6)(
-        delayed(parse_ohlc)(name, df)
-        for name, df in df_dled.groupby(gcol)
+        delayed(parse_ohlc)(name, df) for name, df in df_dled.groupby(gcol)
     )
-    #for name, df in df_dled.groupby(['year', 'month', 'pair']):
-    #    print()
-    #    print(name)
-
-    #    y, m, p, _ = df.values[0]
-    #    outfile = ohlc_fmt.format(period, p, y, m[:2])
-
-    #    outlist = []
-    #    for y, m, p, w in df.values:
-    #        filename = infile.format(y, m, p, w, 'csv')
-    #        if os.path.exists(infile):
-    #            print("Parsing '{}'".format(filename))
-    #            outlist.append(tick_to_ohlc(load_csv(filename), period='1h'))
-    #        else:
-    #            print("Couldn't find '{}'".format(filename))
-
-    #    if not outlist:
-    #        continue
-
-    #    print("Writing to '{}'\n".format(outfile))
-    #    mktree(outfile)
-    #    pd.concat(outlist).sort_index().to_csv(outfile)
 
 
 class Args(Enum):
@@ -111,18 +88,15 @@ class Args(Enum):
 
 if __name__ == '__main__':
     if len(sys.argv) < Args.N.value:
-        print("usage: ./{} file period per_file".format(sys.argv[Args.PROG.value]))
+        print(
+            "usage: ./{} file period per_file".format(
+                sys.argv[Args.PROG.value]
+            )
+        )
         exit(1)
     else:
         main(
             sys.argv[Args.FILE.value],
             sys.argv[Args.PERIOD.value],
-            sys.argv[Args.PER.value]
+            sys.argv[Args.PER.value],
         )
-
-
-
-
-
-
-
