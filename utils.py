@@ -1,10 +1,73 @@
 import os
 import csv
 import sys
+import json
+import itertools
+
+from datetime import datetime
 
 
 baseurl = 'http://ratedata.gaincapital.com/'
 path_fmt = '{}/{}/{}_Week{}.{}'
+
+
+def monthlist(start, end):
+    str_months = [
+        '01 January',
+        '02 February',
+        '03 March',
+        '04 April',
+        '05 May',
+        '06 June',
+        '07 July',
+        '08 August',
+        '09 September',
+        '10 October',
+        '11 November',
+        '12 December',
+    ]
+
+    if start['year'] == end['year']:
+        mlist = [
+            (end['year'], m) for m in range(start['month'] - 1, end['month'])
+        ]
+    else:
+        mlist = []
+        for y in range(start['year'], end['year'] + 1):
+            if y == start['year']:
+                months = range(start['month'] - 1, 12)
+            elif y == end['year']:
+                months = range(end['month'])
+
+            mlist += [(y, m) for m in months]
+
+    # Format as ('%Y', '%m %B')
+    ymlist = [(str(y), str_months[m]) for y, m in mlist]
+    return ymlist
+
+
+def build_combn(start, end, pairs):
+    # Building the lists with parameters to loop through
+    ymlist = monthlist(start, end)  # months
+    plist = [p[:3] + '_' + p[3:] for p in pairs]  # pairs
+    wlist = [str(i) for i in range(1, 6)]  # weeks
+    # note: wlist is list of string to keep compatibility with data loaded
+    # from the CSV file (as string).
+
+    return itertools.product(ymlist, plist, wlist)
+
+
+def load_watchfile(wfile):
+    # Load information of pairs and dates to keep track of
+    with open(wfile, 'r') as f:
+        watching = json.load(f)
+
+    # Download until this month
+    if not 'end' in watching:
+        today = datetime.today()
+        watching['end'] = {'year': today.year, 'month': today.month}
+
+    return watching
 
 
 def mktree(path):
