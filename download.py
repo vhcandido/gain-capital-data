@@ -41,7 +41,7 @@ def download_file(url, filepath=None):
 def main(wfile='metadata/watching_test.json', force=False):
     watching = load_watchfile(wfile)
     combinations = build_combn(
-        watching['start'], watching['end'], watching['pairs'], range(1, 6)
+        watching['start'], watching['end'], watching['pairs']
     )
 
     # Keeping track of files already processed
