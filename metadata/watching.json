@@ -23,14 +23,16 @@
         "USDJPY"
     ],
     "start": {
-        "year": 2013,
+        "year": 2012,
         "month": 1
+    },
+    "end": {
+	    "year": 2012,
+	    "month": 12
     },
     "pathto": {
         "zip": "./data/zip",
-        "tick": "./data/tick",
-        "hour": "./data/hour",
-        "day": "./data/day"
+        "tick": "./data/tick"
     },
     "log": {
         "downloaded": "./metadata/downloaded.csv",

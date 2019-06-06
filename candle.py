@@ -7,6 +7,17 @@ import os
 from joblib import Parallel, delayed
 from enum import Enum
 from utils import path_fmt, build_combn, load_watchfile, mktree
+from enum import Enum
+
+
+class ApplyRemove(Enum):
+    NOT_ASSIGNED = -1
+    ASK = 0
+    KEEP_ALL = 1
+    RM_ALL = 2
+
+
+APPLY_ALL_CSV = ApplyRemove.NOT_ASSIGNED
 
 
 def load_csv(filename):
@@ -26,6 +37,27 @@ def tick_to_ohlc(tick_data, price='RateAsk', period='1h'):
     ohlc.columns = ['Open', 'High', 'Low', 'Close']
     ohlc.index.name = 'DateTime'
     return ohlc
+
+
+def ask_remove(filename):
+    if APPLY_ALL_CSV == ApplyRemove.RM_ALL:
+        print("Removing it...")
+        os.unlink(src)
+    elif (
+        APPLY_ALL_CSV == ApplyRemove.NOT_ASSIGNED
+        or APPLY_ALL_CSV == ApplyRemove.ASK
+    ):
+        answer = query_yes_no("Remove it?", default='no')
+        if answer:
+            print("Removing it...")
+            os.unlink(src)
+        if APPLY_ALL_CSV == ApplyRemove.NOT_ASSIGNED:
+            if query_yes_no("Apply to all?", default='yes'):
+                APPLY_ALL_CSV = (
+                    ApplyRemove.RM_ALL if answer else ApplyRemove.KEEP_ALL
+                )
+            else:
+                APPLY_ALL_CSV = ApplyRemove.ASK
 
 
 def main(wfile, period='1h', per_file='year'):
@@ -64,7 +96,13 @@ def main(wfile, period='1h', per_file='year'):
             filename = infile.format(y, m, p, w, 'csv')
             if os.path.exists(filename):
                 print("Parsing '{}'".format(filename))
-                outlist.append(tick_to_ohlc(load_csv(filename), period='1h'))
+                df = load_csv(filename)
+                if df.empty:
+                    print("Removing empty file: '{}'".format(filename))
+                    #ask_remove(filename)  # won't be used when in parallel
+                    os.unlink(filename)
+                    continue
+                outlist.append(tick_to_ohlc(df, period=period))
             else:
                 print("Couldn't find '{}'".format(filename))
 
@@ -75,7 +113,7 @@ def main(wfile, period='1h', per_file='year'):
         mktree(outfile)
         pd.concat(outlist).sort_index().to_csv(outfile, float_format="%.6f")
 
-    Parallel(n_jobs=6)(
+    Parallel(n_jobs=5)(
         delayed(parse_ohlc)(name, df) for name, df in df_dled.groupby(gcol)
     )
 
